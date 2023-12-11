@@ -1,0 +1,15 @@
+/* variables.css */
+
+:root {
+    --blue-60: #0060df;
+    --blue-70: #003eaa;
+    --gray-20: #ededf0;
+    --light-gray: #F0F0F4;
+    --white: #ffffff;
+    --transition: all .15s cubic-bezier(.07,.95,0,1);
+    --borders: 1px solid #ededf0;
+    --primary-text: #15141A;
+    --secondary-text: #5B5B66;
+    --font-size: 5rem;
+  }
+  

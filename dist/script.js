@@ -12,25 +12,37 @@ import { GestureRecognizer, FilesetResolver, DrawingUtils } from "https://cdn.js
 const demosSection = document.getElementById("demos");
 let gestureRecognizer;
 let runningMode = "IMAGE";
-let enableWebcamButton;
-let webcamRunning = false;
+let webcamRunning = true; // Always start with webcamRunning enabled
+let text;
+const textToTypeElement = document.getElementById("textToType");
+text = textToTypeElement.innerText;
+let signIndex = 0;
 const videoHeight = "360px";
 const videoWidth = "480px";
+
 // Before we can use HandLandmarker class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to
 // get everything needed to run.
 const createGestureRecognizer = async () => {
-    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
-    gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
-        baseOptions: {
-            modelAssetPath: "../gesture_recognizer.task",
-            delegate: "GPU"
-        },
-        runningMode: runningMode
-    });
-    demosSection.classList.remove("invisible");
+    try {
+        const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
+        gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+            baseOptions: {
+                modelAssetPath: "../gesture_recognizer-16_12_10.task",
+                delegate: "GPU"
+            },
+            runningMode: runningMode
+        });
+        demosSection.classList.remove("invisible");
+        enableWebcam();
+    } catch (error) {
+        alert("Error loading gestureRecognizer. Please try again.");
+        console.error(error);
+    }
 };
+
 createGestureRecognizer();
+
 /********************************************************************
 // Demo 2: Continuously grab image from webcam stream and detect it.
 ********************************************************************/
@@ -38,57 +50,53 @@ const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
 const canvasCtx = canvasElement.getContext("2d");
 const gestureOutput = document.getElementById("gesture_output");
+
 // Check if webcam access is supported.
 function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
-// If webcam supported, add event listener to button for when user
-// wants to activate it.
-if (hasGetUserMedia()) {
-    enableWebcamButton = document.getElementById("webcamButton");
-    enableWebcamButton.addEventListener("click", enableCam);
-}
-else {
-    console.warn("getUserMedia() is not supported by your browser");
-}
+
 // Enable the live webcam view and start detection.
-function enableCam(event) {
+function enableWebcam() {
     if (!gestureRecognizer) {
         alert("Please wait for gestureRecognizer to load");
         return;
     }
-    if (webcamRunning === true) {
-        webcamRunning = false;
-        enableWebcamButton.innerText = "ENABLE PREDICTIONS";
-    }
-    else {
-        webcamRunning = true;
-        enableWebcamButton.innerText = "DISABLE PREDICTIONS";
-    }
+
     // getUsermedia parameters.
     const constraints = {
         video: true
     };
+
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         video.srcObject = stream;
         video.addEventListener("loadeddata", predictWebcam);
     });
 }
+
 let lastVideoTime = -1;
+let textStartTime = -1;
+let letterStartTime = -1; // Variable to store the start time when a letter is detected
+let currentLetter = ""; // Variable to store the current letter being detected
 let results = undefined;
+
 async function predictWebcam() {
     const webcamElement = document.getElementById("webcam");
+
     // Now let's start detecting the stream.
     if (runningMode === "IMAGE") {
         runningMode = "VIDEO";
         await gestureRecognizer.setOptions({ runningMode: "VIDEO" });
     }
+
     let nowInMs = Date.now();
+
     if (video.currentTime !== lastVideoTime) {
         lastVideoTime = video.currentTime;
         results = gestureRecognizer.recognizeForVideo(video, nowInMs);
     }
+
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     const drawingUtils = new DrawingUtils(canvasCtx);
@@ -96,32 +104,153 @@ async function predictWebcam() {
     webcamElement.style.height = videoHeight;
     canvasElement.style.width = videoWidth;
     webcamElement.style.width = videoWidth;
+
     if (results.landmarks) {
         for (const landmarks of results.landmarks) {
+            const boundingBox = getBoundingBox(landmarks, canvasElement.width, canvasElement.height);
+    
+            // Draw white box around the hand
+            canvasCtx.strokeStyle = "#ffffff";
+            canvasCtx.lineWidth = 2;
+            canvasCtx.strokeRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+    
             drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
-                color: "#00FF00",
+                color: "#ffffff",
                 lineWidth: 5
             });
             drawingUtils.drawLandmarks(landmarks, {
-                color: "#FF0000",
+                color: "#0060df",
                 lineWidth: 2
             });
+    
+            // Get guess and confidence
+            const letter = categoryToLetter(results.gestures[0][0].categoryName);
+            const categoryScore = parseFloat(results.gestures[0][0].score * 100).toFixed(2);
+    
+            // Draw guess at the bottom right of the box
+            drawText(canvasCtx, letter, boundingBox.x + boundingBox.width - 20, boundingBox.y + boundingBox.height + 15, "#ffffff");
+    
+            // Draw confidence at the top right of the box
+            drawText(canvasCtx, `${categoryScore} %`, boundingBox.x + boundingBox.width - 20, boundingBox.y - 10, "#ffffff");
         }
     }
+
     canvasCtx.restore();
+
+    gestureOutput.style.display = "block";
+    gestureOutput.style.width = videoWidth;
+
     if (results.gestures.length > 0) {
         gestureOutput.style.display = "block";
-        gestureOutput.style.width = videoWidth;
-        const categoryName = results.gestures[0][0].categoryName;
+        const letter = categoryToLetter(results.gestures[0][0].categoryName);
+        // Check if the current letter is detected and start the timer
+        if (letter !== currentLetter) {
+            currentLetter = letter;
+            letterStartTime = nowInMs;
+        }
+
+        // Check if the current letter has been held for one second
+        if (letter === currentLetter && letterStartTime !== -1 && nowInMs - letterStartTime >= 300) {
+            // Reset the timer and go forward with the typing
+            letterStartTime = -1;
+            updateTyper(letter);
+        }
+        
         const categoryScore = parseFloat(results.gestures[0][0].score * 100).toFixed(2);
-        const handedness = results.handednesses[0][0].displayName;
-        gestureOutput.innerText = `GestureRecognizer: ${categoryName}\n Confidence: ${categoryScore} %\n Handedness: ${handedness}`;
+        gestureOutput.innerText = `Täht: ${letter}\n Enesekindlus: ${categoryScore} %`;
     }
     else {
         gestureOutput.style.display = "none";
     }
-    // Call this function again to keep predicting when the browser is ready.
+
     if (webcamRunning === true) {
         window.requestAnimationFrame(predictWebcam);
     }
 }
+
+
+function getBoundingBox(landmarks, videoWidth, videoHeight) {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+
+    for (const point of landmarks) {
+        minX = Math.min(minX, point.x);
+        minY = Math.min(minY, point.y);
+        maxX = Math.max(maxX, point.x);
+        maxY = Math.max(maxY, point.y);
+    }
+
+    const width = (maxX - minX) * videoWidth;
+    const height = (maxY - minY) * videoHeight;
+
+    return { x: minX * videoWidth, y: minY * videoHeight, width, height };
+}
+
+function drawText(ctx, text, x, y, color, fontSize = "16px") {
+    ctx.font = `${fontSize} Arial`;
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+}
+
+
+function updateTyper(userGesture) {
+    let nowInMs = Date.now();
+
+    const correctCharacter = text[signIndex];
+    const textToTypeElement = document.getElementById("textToType");
+
+    if (userGesture === correctCharacter) {
+        // User typed the correct character
+        signIndex += 1;
+    }
+
+    // Generate the formatted text content
+    let formattedText = "";
+    for (let i = 0; i < text.length; i++) {
+        if (i == 1) {
+            textStartTime = nowInMs;
+        }
+        if (i < signIndex) {
+            formattedText += `<span class="correct">${text[i]}</span>`;
+        } else if (i === signIndex) {
+            formattedText += `<span class="current">${text[i]}</span>`;
+        } else {
+            formattedText += `<span class="untyped">${text[i]}</span>`;
+        }
+    }
+
+    // Update the text content
+    textToTypeElement.innerHTML = formattedText;
+
+    // Check if the user has completed typing
+    if (signIndex === text.length) {
+        // User completed typing
+        let textTime = (nowInMs - textStartTime) / 1000;
+        alert(`Congratulations! You typed the alphabet in ${textTime} seconds.`);
+    }
+}
+
+function categoryToLetter(category) {
+    const categoryMap = {
+        AE: 'Ä',
+        OE: 'Ö',
+        OY: 'Õ',
+        UY: 'Ü',
+        ZH: 'Ž',
+        SH: 'Š',
+    };
+
+    // Convert the category to uppercase for case-insensitive comparison
+    const uppercaseCategory = category.toUpperCase();
+
+    // Check if the category exists in the mapping, return the corresponding letter
+    if (categoryMap.hasOwnProperty(uppercaseCategory)) {
+        return categoryMap[uppercaseCategory];
+    }
+
+    // Return the original category if no mapping is found
+    return category;
+}
+
