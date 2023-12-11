@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Sõrmendi Harjutaja</title>
+  <title>Kiire Viibe</title>
+  <link rel="icon" href="hand-wave-icon.svg">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 <!-- partial:index.partial.html -->
@@ -24,8 +26,20 @@ limitations under the License. -->
 
 <header>
   <nav>
-    <a href="index.html" id="logo" class="selected">Kiire Viibe</a>
+    <a href="index.html" id="logo" class="selected">
+      Kiire Viibe
+    </a>
     <a href="teave.html" id="teave">Teave</a>
+    <div class="dropdown">
+      <button class="dropbtn" id="dropbtn">Tähestik
+      </button>
+      <i class="fa fa-caret-down"></i>
+      <div class="dropdown-content">
+        <a href="#" id="alphabet">Alphabet</a>
+        <a href="#" id="estonian-names">Eesti nimed 1k</a>
+        <a href="#" id="tammsaare">Tammsaare 1.8k</a>
+      </div>
+    </div>
   </nav>
 </header>
 
@@ -48,10 +62,9 @@ limitations under the License. -->
       <p id='gesture_output' class="output"></p>
     </div>
   </div>
-
+  
 </section>
 <!-- partial -->
-  <script type="module" src="./script.js"></script>
-
+  <script type="module" src="./script.js" defer></script>
 </body>
 </html>

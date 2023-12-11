@@ -76,17 +76,6 @@ function highlightGuess(str) {
     return str;
   }
 
-//highlights the guess
-function highlightGuess(str) {
-    if (str[6]==="<") {
-        return str;
-    }
-    if (str.length >= 7) {
-      return str.substring(0, 6) + '<span class="highlight">' + str[6] + '</span>' + str.substring(7);
-    }
-    return str;
-  }
-
 // Enable the live webcam view and start detection.
 function enableWebcam() {
     if (!gestureRecognizer) {
@@ -164,10 +153,10 @@ async function predictWebcam() {
             const categoryScore = parseFloat(results.gestures[0][0].score * 100).toFixed(2);
     
             // Draw guess at the bottom right of the box
-            drawText(canvasCtx, letter, boundingBox.x + boundingBox.width - 20, boundingBox.y + boundingBox.height + 15, "#ffffff");
+            //drawText(canvasCtx, letter, boundingBox.x + boundingBox.width - 20, boundingBox.y + boundingBox.height + 15, "#ffffff");
     
             // Draw confidence at the top right of the box
-            drawText(canvasCtx, `${categoryScore} %`, boundingBox.x + boundingBox.width - 20, boundingBox.y - 10, "#ffffff");
+            //drawText(canvasCtx, `${categoryScore} %`, boundingBox.x + boundingBox.width - 20, boundingBox.y - 10, "#ffffff");
         }
     }
 
@@ -237,14 +226,17 @@ function updateTyper(userGesture) {
     if (userGesture === correctCharacter) {
         // User typed the correct character
         signIndex += 1;
+        while(text[signIndex] === " " || text[signIndex] === "\n" || userGesture === text[signIndex]) {
+            signIndex += 1;
+        }
+        if (timerStartTime === -1) {
+            startTimer();
+        }
     }
 
     // Generate the formatted text content
     let formattedText = "";
     for (let i = 0; i < text.length; i++) {
-        if (i === 1 && timerStartTime === -1) {
-            startTimer();
-        }
         if (i < signIndex) {
             formattedText += `<span class="correct">${text[i]}</span>`;
         } else if (i === signIndex) {
@@ -258,7 +250,7 @@ function updateTyper(userGesture) {
     textToTypeElement.innerHTML = formattedText;
 
     // Check if the user has completed typing
-    if (signIndex === text.length) {
+    if (signIndex === text.length || signIndex > text.lenght) {
         // User completed typing
         let textTime = (Date.now() - timerStartTime) / 1000;
         clearInterval(timerInterval);  // Stop the timer when typing is complete
@@ -298,3 +290,94 @@ function updateTimer() {
     const elapsedTimeInSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
     timerElement.innerText = `Timer: ${elapsedTimeInSeconds}s`;
 }
+
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerStartTime = -1;
+    updateTimer(); // Reset the displayed timer
+}
+
+// Load file contents
+var files = {};
+
+function loadFile(filename, key) {
+    fetch(filename)
+        .then(response => response.text())
+        .then(data => {
+            files[key] = data;
+        })
+        .catch(error => {
+            console.error('Error loading file:', error);
+        });
+}
+
+// Load files when the page is loaded
+document.addEventListener("DOMContentLoaded", function () {
+    loadFile('./tekstid/alphabet.txt', 'alphabet');
+    loadFile('./tekstid/estonian_names.txt', 'estonian-names');
+    loadFile('./tekstid/tammsaare_stripped.txt', 'tammsaare');
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the dropdown content
+    var dropdownContent = document.querySelector(".dropdown-content");
+    var textToType = document.getElementById("textToType");
+    var timerElement = document.getElementById("timer");
+    var timerInterval;
+    var dropbtn = document.getElementById("dropbtn");
+
+    // Add click event listeners to each dropdown option
+    var alphabet = document.getElementById("alphabet");
+    var estonianNames = document.getElementById("estonian-names");
+    var tammsaare = document.getElementById("tammsaare");
+
+    function getRandomLine(filename) {
+        // Assuming you have the file content loaded in the 'files' object
+        var lines = files[filename].split('\n');
+        var randomIndex = Math.floor(Math.random() * lines.length);
+        return lines[randomIndex];
+    }
+
+    alphabet.addEventListener("click", function () {
+        textToType.innerText = "ABCDEFGHIJKLMNOPRSŠZŽTUVWÕÄÖÜY";
+        text = textToTypeElement.innerText;
+        dropbtn.innerText = "Tähestik";
+        let signIndex = 0;
+        stopTimer();
+        resetTimer();
+        alphabet.classList.add("selected");
+        estonianNames.classList.remove("selected");
+        tammsaare.classList.remove("selected");
+    });
+
+    estonianNames.addEventListener("click", function () {
+        textToType.innerText = getRandomLine('estonian-names');
+        text = textToTypeElement.innerText;
+        dropbtn.innerText = "Eesti nimed";
+        let signIndex = 0;
+        stopTimer();
+        resetTimer();
+        alphabet.classList.remove("selected");
+        estonianNames.classList.add("selected");
+        tammsaare.classList.remove("selected");
+    });
+
+    tammsaare.addEventListener("click", function () {
+        textToType.innerText = getRandomLine('tammsaare');
+        text = textToTypeElement.innerText;
+        dropbtn.innerText = "Tammsaare";
+        let signIndex = 0;
+        stopTimer();
+        resetTimer();
+        alphabet.classList.remove("selected");
+        estonianNames.classList.remove("selected");
+        tammsaare.classList.add("selected");
+    });
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timerElement.innerText = "Timer: 0s";
+    }
+});
