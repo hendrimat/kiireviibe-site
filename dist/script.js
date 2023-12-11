@@ -17,8 +17,12 @@ let text;
 const textToTypeElement = document.getElementById("textToType");
 text = textToTypeElement.innerText;
 let signIndex = 0;
-const videoHeight = "360px";
-const videoWidth = "480px";
+
+const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+//console.log(screenWidth);
+const videoWidth = (Math.round(screenWidth/2.22)) +"px";
+const videoHeight = (Math.round(screenWidth/2.96)) + "px";
+console.log("W: " + videoWidth + " H: " + videoHeight);
 
 // Before we can use HandLandmarker class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to
@@ -137,11 +141,11 @@ async function predictWebcam() {
 
     canvasCtx.restore();
 
-    gestureOutput.style.display = "block";
+    gestureOutput.style.visibility = "visible";
     gestureOutput.style.width = videoWidth;
 
     if (results.gestures.length > 0) {
-        gestureOutput.style.display = "block";
+        gestureOutput.style.visibility = "visible";
         const letter = categoryToLetter(results.gestures[0][0].categoryName);
         // Check if the current letter is detected and start the timer
         if (letter !== currentLetter) {
@@ -160,7 +164,7 @@ async function predictWebcam() {
         gestureOutput.innerText = `Täht: ${letter}\n Enesekindlus: ${categoryScore} %`;
     }
     else {
-        gestureOutput.style.display = "none";
+        gestureOutput.style.visibility = "hidden";
     }
 
     if (webcamRunning === true) {

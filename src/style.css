@@ -62,14 +62,14 @@ section {
   position: absolute;
   float: left;
   width: 48%;
-  margin: 2% 1%;
+  margin: 0;
   cursor: pointer;
   min-height: 500px;
 }
 
 .videoView p,
 .detectOnClick p {
-  padding-top: 5px;
+  padding-top: 0px;
   padding-bottom: 5px;
   background-color: #007f8b;
   color: #fff;
