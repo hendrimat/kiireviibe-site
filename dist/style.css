@@ -132,15 +132,12 @@
     color: var(--secondary-text, grey);
   }
   p {
-    display: block;
-    align-self: left;
-    margin: 1em;
+    align-self: center;
   }
 
   h1 {
     display: block;
     align-self: center;
-    margin: 0.5em;
   }
 
   .link {
@@ -153,6 +150,41 @@
     color: var(--blue-70, #003eaa);
   }
 
+  #loadingOverlay {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .loadingText {
+    color: var(--primary-text, black);
+    margin-top: 1 em;
+    top:0;
+  }
+  
+  .loader {
+    border: 1em solid #f3f3f3;
+    border-top: 1em solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
   
 
   @keyframes fadeIn {
@@ -170,6 +202,7 @@
     opacity: 0;
     animation: fadeIn 0.3s ease-in-out;
     opacity: 1;
+    margin: 1em;
   }
   
   #textToType.current::after {

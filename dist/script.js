@@ -60,6 +60,11 @@ function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
+function hideLoadingOverlay() {
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    loadingOverlay.style.display = "none";
+  }
+
 //highlights the guess
 function highlightGuess(str) {
     if (str[6]==="<") {
@@ -86,7 +91,10 @@ function enableWebcam() {
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         video.srcObject = stream;
-        video.addEventListener("loadeddata", predictWebcam);
+        video.addEventListener("loadeddata", function() {
+            predictWebcam();
+            hideLoadingOverlay();
+        });
     });
 }
 
