@@ -32,7 +32,7 @@ const createGestureRecognizer = async () => {
         const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
         gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
             baseOptions: {
-                modelAssetPath: "../gesture_recognizer-16_12_10.task",
+                modelAssetPath: "../gesture_recognizer-2.task",
                 delegate: "GPU"
             },
             runningMode: runningMode
@@ -80,10 +80,12 @@ function enableWebcam() {
 }
 
 let lastVideoTime = -1;
-let textStartTime = -1;
 let letterStartTime = -1; // Variable to store the start time when a letter is detected
 let currentLetter = ""; // Variable to store the current letter being detected
 let results = undefined;
+let timerElement = document.getElementById("timer");
+let timerInterval;
+let timerStartTime = -1;
 
 async function predictWebcam() {
     const webcamElement = document.getElementById("webcam");
@@ -162,8 +164,7 @@ async function predictWebcam() {
         
         const categoryScore = parseFloat(results.gestures[0][0].score * 100).toFixed(2);
         gestureOutput.innerText = `Täht: ${letter}\n Enesekindlus: ${categoryScore} %`;
-    }
-    else {
+    } else {
         gestureOutput.style.visibility = "hidden";
     }
 
@@ -198,10 +199,7 @@ function drawText(ctx, text, x, y, color, fontSize = "16px") {
     ctx.fillText(text, x, y);
 }
 
-
 function updateTyper(userGesture) {
-    let nowInMs = Date.now();
-
     const correctCharacter = text[signIndex];
     const textToTypeElement = document.getElementById("textToType");
 
@@ -213,8 +211,8 @@ function updateTyper(userGesture) {
     // Generate the formatted text content
     let formattedText = "";
     for (let i = 0; i < text.length; i++) {
-        if (i == 1) {
-            textStartTime = nowInMs;
+        if (i === 1 && timerStartTime === -1) {
+            startTimer();
         }
         if (i < signIndex) {
             formattedText += `<span class="correct">${text[i]}</span>`;
@@ -231,7 +229,9 @@ function updateTyper(userGesture) {
     // Check if the user has completed typing
     if (signIndex === text.length) {
         // User completed typing
-        let textTime = (nowInMs - textStartTime) / 1000;
+        let textTime = (Date.now() - timerStartTime) / 1000;
+        clearInterval(timerInterval);  // Stop the timer when typing is complete
+        timerElement.innerText = "";  // Clear the timer display
         alert(`Congratulations! You typed the alphabet in ${textTime} seconds.`);
     }
 }
@@ -258,3 +258,12 @@ function categoryToLetter(category) {
     return category;
 }
 
+function startTimer() {
+    timerStartTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer() {
+    const elapsedTimeInSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
+    timerElement.innerText = `Timer: ${elapsedTimeInSeconds}s`;
+}
