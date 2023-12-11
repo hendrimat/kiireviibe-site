@@ -60,6 +60,17 @@ function hasGetUserMedia() {
     return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 }
 
+//highlights the guess
+function highlightGuess(str) {
+    if (str[6]==="<") {
+        return str;
+    }
+    if (str.length >= 7) {
+      return str.substring(0, 6) + '<span class="highlight">' + str[6] + '</span>' + str.substring(7);
+    }
+    return str;
+  }
+
 // Enable the live webcam view and start detection.
 function enableWebcam() {
     if (!gestureRecognizer) {
@@ -114,12 +125,12 @@ async function predictWebcam() {
             const boundingBox = getBoundingBox(landmarks, canvasElement.width, canvasElement.height);
     
             // Draw white box around the hand
-            canvasCtx.strokeStyle = "#ffffff";
+            canvasCtx.strokeStyle = "#F0F0F4";
             canvasCtx.lineWidth = 2;
             canvasCtx.strokeRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
     
             drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
-                color: "#ffffff",
+                color: "#F0F0F4",
                 lineWidth: 5
             });
             drawingUtils.drawLandmarks(landmarks, {
@@ -162,6 +173,7 @@ async function predictWebcam() {
         
         const categoryScore = parseFloat(results.gestures[0][0].score * 100).toFixed(2);
         gestureOutput.innerText = `Täht: ${letter}\n Enesekindlus: ${categoryScore} %`;
+        document.getElementById('gesture_output').innerHTML = highlightGuess(document.getElementById('gesture_output').innerHTML);
     }
     else {
         gestureOutput.style.visibility = "hidden";

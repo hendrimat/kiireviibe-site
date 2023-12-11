@@ -13,6 +13,7 @@
 
    body {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
@@ -103,6 +104,11 @@
     -moz-transform: rotateY(180deg);
   }
   
+  .highlight {
+    color: var(--blue-70, #003eaa);
+    font-weight: bold;
+    font-size: 1em;
+  }
   
   .output {
     visibility: hidden;
@@ -112,6 +118,7 @@
   }
 
   #gesture_output {
+    font-size: 1.7em;
     display: block;
   }
   
@@ -124,8 +131,48 @@
     position: relative;
     color: var(--secondary-text, grey);
   }
+  p {
+    display: block;
+    align-self: left;
+    margin: 1em;
+  }
+
+  h1 {
+    display: block;
+    align-self: center;
+    margin: 0.5em;
+  }
+
+  .link {
+    color: var(--primary-text, black);
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .link:hover {
+    color: var(--blue-70, #003eaa);
+  }
+
   
-  #textToType .current::after {
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  
+  .teave {
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out;
+    opacity: 1;
+  }
+  
+  #textToType.current::after {
     /* Blinking underline */
     content: '';
     position: absolute;
