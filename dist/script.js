@@ -96,7 +96,7 @@ function enableWebcam() {
             hideLoadingOverlay();
         });
     });
-}
+    }
 
 let lastVideoTime = -1;
 let letterStartTime = -1; // Variable to store the start time when a letter is detected
@@ -255,7 +255,7 @@ function updateTyper(userGesture) {
         let textTime = (Date.now() - timerStartTime) / 1000;
         clearInterval(timerInterval);  // Stop the timer when typing is complete
         timerElement.innerText = "";  // Clear the timer display
-        alert(`Congratulations! You typed the alphabet in ${textTime} seconds.`);
+        showWin(signIndex, textTime);
     }
 }
 
@@ -400,8 +400,60 @@ document.addEventListener('DOMContentLoaded', function() {
             vihjed.classList.add("selected");
             hints.style.visibility = "visible";
         }
-    });
+    }); 
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    var button = document.getElementById("restart");
+    button.addEventListener('click', function(){
+        winOverlay.style.display = "none";
+        restartGame();
+    });
+})
+
+document.addEventListener('DOMContentLoaded', function() {
+    var timerButton = document.getElementById("Timer");
+    var timer = document.getElementById("timer");
+    timerButton.addEventListener('click', function() {
+        if(timerButton.classList.contains("selected")){
+            timerButton.classList.remove("selected");
+            timer.style.display = "none";
+        } else {
+            timerButton.classList.add("selected");
+            timer.style.display = "block";
+        }
+    }); 
+});
+
+function restartGame() {
+    var textToType = document.getElementById("textToType");
+    var dropbtn = document.getElementById("dropbtn");
+    var alphabet = document.getElementById("alphabet");
+    var estonianNames = document.getElementById("estonian-names");
+    var tammsaare = document.getElementById("tammsaare");
+    textToType.innerText = "ABCDEFGHIJKLMNOPRSŠZŽTUVWÕÄÖÜY";
+    text = textToTypeElement.innerText;
+    dropbtn.innerText = "Tähestik";
+    signIndex = 0;
+    letterStartTime = -1;
+    stopTimer();
+    resetTimer();
+    alphabet.classList.add("selected");
+    estonianNames.classList.remove("selected");
+    tammsaare.classList.remove("selected");
+    updateHint();
+}
+
+function showWin(lett, sec) {
+    var winOverlay = document.getElementById("winOverlay");
+    var seconds = document.getElementById("seconds");
+    var letters = document.getElementById("letters");
+    var ts = document.getElementById("ts");
+    winOverlay.style.display = "block";
+    seconds.innerText = sec;
+    letters.innerText = lett;
+    ts.innerText = Math.round((lett/sec)*60);
+}
 
 function updateHint() {
     const hintImage = document.getElementById('hintImage');
