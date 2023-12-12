@@ -437,11 +437,11 @@ function restartGame() {
     signIndex = 0;
     letterStartTime = -1;
     stopTimer();
-    resetTimer();
     alphabet.classList.add("selected");
     estonianNames.classList.remove("selected");
     tammsaare.classList.remove("selected");
     updateHint();
+    resetTimer();
 }
 
 function showWin(lett, sec) {
