@@ -177,6 +177,7 @@
   
   #webcam {
     width: 100%; /* Make the video fill the container width */
+    border-radius: 0.5em;
   }
 
   #liveView {
