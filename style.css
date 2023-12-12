@@ -33,6 +33,26 @@
     flex: 1;
   }
 
+  #left-nav {
+    flex: 1;
+    justify-content: left;
+  }
+  #right-nav {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: right;
+    justify-content: right;
+    margin-left: 1em;
+    margin-right: 1em;
+    right: 0;
+  }
+
+  #Timer, #vihjed{
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+
   #hintImage{
     display: block;
     margin-top: 2em;
@@ -42,6 +62,8 @@
   }
   
   #hints p {
+    right: 0;
+    justify-content: right;
     display: none;
     margin-left: 2em;
     top: 0;
@@ -67,7 +89,8 @@
 
   nav {
     display: flex;
-    justify-content: left;
+    flex-direction: row;
+    justify-content: auto;
     margin-top: 0.6em;
     margin-left: 1.2em;
   }
@@ -80,21 +103,14 @@
     transition: color 0.3s ease;
   }
   .dropbtn{
-    padding-left: 3em;
+    padding-left: 0em;
   }
 
   .dropdown {
-    margin-left: 0em;
-    float:right;
-    overflow: hidden;
-  }
-
-  #vihjed {
+    margin-right: 1.2em;
     margin-left: 3em;
-  }
-
-  #Timer {
-    margin-left: 28em;
+    overflow: hidden;
+    float: right;
   }
 
   .dropdown .dropbtn {
@@ -112,8 +128,8 @@
   }
   
   .dropdown-content {
+    justify-content: center;
     min-width: 11.45em;
-    margin-right: 10em;
     margin-top: 0em;
     background-color: var(--secondary-background , #ccceda);
     display: none;
@@ -125,6 +141,8 @@
     border-width: 0.1em;
     border-radius: 0.3em;
     outline: none;
+    right:0;
+    margin-right: 0.5em;
   }
   
   .dropdown-content a {
@@ -193,7 +211,7 @@
     margin-top: 3em;
     margin-bottom: 0;
   }
-  
+
   #liveView video {
     display: block;
     transform: rotateY(180deg);
