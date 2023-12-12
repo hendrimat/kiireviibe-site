@@ -233,7 +233,7 @@ function updateTyper(userGesture) {
             startTimer();
         }
     }
-
+    updateHint();
     // Generate the formatted text content
     let formattedText = "";
     for (let i = 0; i < text.length; i++) {
@@ -344,36 +344,42 @@ document.addEventListener("DOMContentLoaded", function () {
         textToType.innerText = "ABCDEFGHIJKLMNOPRSŠZŽTUVWÕÄÖÜY";
         text = textToTypeElement.innerText;
         dropbtn.innerText = "Tähestik";
-        let signIndex = 0;
+        signIndex = 0;
+        letterStartTime = -1;
         stopTimer();
         resetTimer();
         alphabet.classList.add("selected");
         estonianNames.classList.remove("selected");
         tammsaare.classList.remove("selected");
+        updateHint();
     });
 
     estonianNames.addEventListener("click", function () {
         textToType.innerText = getRandomLine('estonian-names');
         text = textToTypeElement.innerText;
         dropbtn.innerText = "Eesti nimed";
-        let signIndex = 0;
+        signIndex = 0;
+        letterStartTime = -1;
         stopTimer();
         resetTimer();
         alphabet.classList.remove("selected");
         estonianNames.classList.add("selected");
         tammsaare.classList.remove("selected");
+        updateHint();
     });
 
     tammsaare.addEventListener("click", function () {
         textToType.innerText = getRandomLine('tammsaare');
         text = textToTypeElement.innerText;
         dropbtn.innerText = "Tammsaare";
-        let signIndex = 0;
+        signIndex = 0;
+        letterStartTime = -1;
         stopTimer();
         resetTimer();
         alphabet.classList.remove("selected");
         estonianNames.classList.remove("selected");
         tammsaare.classList.add("selected");
+        updateHint();
     });
 
     function resetTimer() {
@@ -381,3 +387,26 @@ document.addEventListener("DOMContentLoaded", function () {
         timerElement.innerText = "Timer: 0s";
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var vihjed = document.getElementById("vihjed");
+    var hints = document.getElementById("hints");
+    vihjed.addEventListener('click', function() {
+        if(vihjed.classList.contains("selected")){
+            vihjed.classList.remove("selected");
+            hints.style.visibility = "hidden";
+        } else {
+            vihjed.classList.add("selected");
+            hints.style.visibility = "visible";
+        }
+    });
+});
+
+function updateHint() {
+    const hintImage = document.getElementById('hintImage');
+    const imagePath = `./img/${text[signIndex]}.png`;
+
+    hintImage.src = imagePath;
+}
+updateHint();

@@ -30,12 +30,16 @@ limitations under the License. -->
       Kiire Viibe
     </a>
     <a href="teave.html" id="teave">Teave</a>
+    <a href="#" id="vihjed">
+      <i class="fa fa-lightbulb-o"></i>    
+      Vihjed
+    </a>
     <div class="dropdown">
       <button class="dropbtn" id="dropbtn">Tähestik
       </button>
       <i class="fa fa-caret-down"></i>
       <div class="dropdown-content">
-        <a href="#" id="alphabet">Alphabet</a>
+        <a href="#" id="alphabet" class="selected">Tähestik</a>
         <a href="#" id="estonian-names">Eesti nimed 1k</a>
         <a href="#" id="tammsaare">Tammsaare 1.8k</a>
       </div>
@@ -43,13 +47,18 @@ limitations under the License. -->
   </nav>
 </header>
 
+<section id="hints">
+  <p>Sõrmend:</p>
+  <br>
+  <img src="./img/A.png" alt="sõrmend" id="hintImage">
+</section>
+
 <section id="demos" class="invisible">
 
   <section id="typingSection">
     <div id="timer">Timer: 0s</div>
     <p id="textToType">ABCDEFGHIJKLMNOPRSŠZŽTUVWÕÄÖÜY</p>
   </section>
-
 
   <div id="liveView" class="videoView">
     <div id="loadingOverlay">
@@ -63,6 +72,10 @@ limitations under the License. -->
     </div>
   </div>
   
+</section>
+
+<section id="stats">
+  stats
 </section>
 <!-- partial -->
   <script type="module" src="./script.js" defer></script>
