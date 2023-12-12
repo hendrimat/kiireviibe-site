@@ -405,9 +405,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     var button = document.getElementById("restart");
+    var timerElement = document.getElementById("timer");
     button.addEventListener('click', function(){
         winOverlay.style.display = "none";
         restartGame();
+        timerElement.innerText = "Timer: 0s";
     });
 })
 
@@ -426,11 +428,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function restartGame() {
+    var timerElement = document.getElementById("timer");
     var textToType = document.getElementById("textToType");
     var dropbtn = document.getElementById("dropbtn");
     var alphabet = document.getElementById("alphabet");
     var estonianNames = document.getElementById("estonian-names");
     var tammsaare = document.getElementById("tammsaare");
+
     textToType.innerText = "ABCDEFGHIJKLMNOPRSŠZŽTUVWÕÄÖÜY";
     text = textToTypeElement.innerText;
     dropbtn.innerText = "Tähestik";
@@ -441,18 +445,28 @@ function restartGame() {
     estonianNames.classList.remove("selected");
     tammsaare.classList.remove("selected");
     updateHint();
-    resetTimer();
+    timerElement.innerText = "Timer: 0s";
 }
 
 function showWin(lett, sec) {
+    
+    var timerElement = document.getElementById("timer");
     var winOverlay = document.getElementById("winOverlay");
     var seconds = document.getElementById("seconds");
     var letters = document.getElementById("letters");
     var ts = document.getElementById("ts");
+
+    if(winOverlay.style.display === "block") {
+        return;
+    }
+
     winOverlay.style.display = "block";
     seconds.innerText = sec;
     letters.innerText = lett;
     ts.innerText = Math.round((lett/sec)*60);
+    stopTimer();
+    clearInterval(timerInterval);
+    timerElement.innerText = "Timer: 0s";
 }
 
 function updateHint() {
