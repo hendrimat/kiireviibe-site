@@ -186,7 +186,7 @@
   }
 
   #timer {
-    display: none;
+    display: block;
     color: var(--secondary-text, gray);
     size: 0.3em;
     margin-top: 3em;

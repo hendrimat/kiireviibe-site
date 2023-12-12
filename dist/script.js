@@ -32,7 +32,7 @@ const createGestureRecognizer = async () => {
         const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
         gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
             baseOptions: {
-                modelAssetPath: "../gesture_recognizer-2.task",
+                modelAssetPath: "../models/gesture_recognizer-2.task",
                 delegate: "GPU"
             },
             runningMode: runningMode
@@ -135,9 +135,9 @@ async function predictWebcam() {
             const boundingBox = getBoundingBox(landmarks, canvasElement.width, canvasElement.height);
     
             // Draw white box around the hand
-            canvasCtx.strokeStyle = "#F0F0F4";
-            canvasCtx.lineWidth = 2;
-            canvasCtx.strokeRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
+            //canvasCtx.strokeStyle = "#F0F0F4";
+            //canvasCtx.lineWidth = 2;
+            //canvasCtx.strokeRect(boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
     
             drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
                 color: "#F0F0F4",
