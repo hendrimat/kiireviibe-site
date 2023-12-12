@@ -132,7 +132,7 @@ async function predictWebcam() {
 
     if (results.landmarks) {
         for (const landmarks of results.landmarks) {
-            const boundingBox = getBoundingBox(landmarks, canvasElement.width, canvasElement.height);
+            //const boundingBox = getBoundingBox(landmarks, canvasElement.width, canvasElement.height);
     
             // Draw white box around the hand
             //canvasCtx.strokeStyle = "#F0F0F4";
@@ -141,11 +141,11 @@ async function predictWebcam() {
     
             drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
                 color: "#F0F0F4",
-                lineWidth: 5
+                lineWidth: 3
             });
             drawingUtils.drawLandmarks(landmarks, {
                 color: "#0060df",
-                lineWidth: 2
+                radius: 2
             });
     
             // Get guess and confidence
