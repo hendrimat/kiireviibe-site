@@ -288,7 +288,7 @@ function startTimer() {
 
 function updateTimer() {
     const elapsedTimeInSeconds = Math.floor((Date.now() - timerStartTime) / 1000);
-    timerElement.innerText = `Timer: ${elapsedTimeInSeconds}s`;
+    timerElement.innerText = `${elapsedTimeInSeconds}`;
 }
 
 
@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function resetTimer() {
         clearInterval(timerInterval);
-        timerElement.innerText = "Timer: 0s";
+        timerElement.innerText = "0";
     }
 });
 
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener('click', function(){
         winOverlay.style.display = "none";
         restartGame();
-        timerElement.innerText = "Timer: 0s";
+        timerElement.innerText = "0";
     });
 })
 
@@ -445,7 +445,7 @@ function restartGame() {
     estonianNames.classList.remove("selected");
     tammsaare.classList.remove("selected");
     updateHint();
-    timerElement.innerText = "Timer: 0s";
+    timerElement.innerText = "0";
 }
 
 function showWin(lett, sec) {
@@ -466,7 +466,7 @@ function showWin(lett, sec) {
     ts.innerText = Math.round((lett/sec)*60);
     stopTimer();
     clearInterval(timerInterval);
-    timerElement.innerText = "Timer: 0s";
+    timerElement.innerText = "0";
 }
 
 function updateHint() {
@@ -476,3 +476,14 @@ function updateHint() {
     hintImage.src = imagePath;
 }
 updateHint();
+
+window.addEventListener('load', function() { // mobiili kontrollimine
+    var isMobile = window.innerWidth < window.innerHeight;
+    var timer = document.getElementById('Timer');
+    var vihjed = this.document.getElementById('vihjed');
+    if(isMobile) {
+        //ainult logode allesjätmine
+        timer.childNodes[2].nodeValue = "";
+        vihjed.childNodes[2]. nodeValue = "";
+    }
+})
