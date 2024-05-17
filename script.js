@@ -27,6 +27,7 @@ console.log("W: " + videoWidth + " H: " + videoHeight);
 // Before we can use HandLandmarker class we must wait for it to finish
 // loading. Machine Learning models can be large and take a moment to
 // get everything needed to run.
+
 const createGestureRecognizer = async () => {
     try {
         const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm");
@@ -63,11 +64,11 @@ function hasGetUserMedia() {
 function hideLoadingOverlay() {
     const loadingOverlay = document.getElementById("loadingOverlay");
     loadingOverlay.style.display = "none";
-  }
+}
 
 //highlights the guess
 function highlightGuess(str) {
-    if (str[6]==="<") {
+    if (str[6]==="<") { 
         return str;
     }
     if (str.length >= 7) {
@@ -391,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener('DOMContentLoaded', function() {
     var vihjed = document.getElementById("vihjed");
-    var hints = document.getElementById("hints");
+    var hints = document.getElementById("hintCorner");
     vihjed.addEventListener('click', function() {
         if(vihjed.classList.contains("selected")){
             vihjed.classList.remove("selected");

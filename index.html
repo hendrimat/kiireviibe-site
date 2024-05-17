@@ -71,7 +71,6 @@ limitations under the License. -->
 <section id="hints">
   <p>Sõrmend:</p>
   <br>
-  <img src="./img/A.png" alt="" id="hintImage">
 </section>
 
 <section id="demos" class="invisible">
@@ -82,6 +81,7 @@ limitations under the License. -->
   </section>
 
   <div id="liveView" class="videoView">
+    
     <div id="loadingOverlay">
       <div class="loader"></div>
       <p class="loadingText">Laen tuvastajat...</p>
@@ -89,8 +89,11 @@ limitations under the License. -->
     <div style="position: relative;">
       <video id="webcam" autoplay playsinline></video>
       <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
-      <p id='gesture_output' class="output"></p>
+      <div id="hintCorner">
+        <img src="./img/A.png" alt="" id="hintImage"> 
+      </div>
     </div>
+    <p id='gesture_output' class="output"></p>
   </div>
   
 </section>

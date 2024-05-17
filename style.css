@@ -52,7 +52,7 @@
     margin-left: 1em;
     margin-right: 1em;
   }
-
+  /*
   #hintImage{
     display: block;
     margin-top: 2em;
@@ -60,7 +60,7 @@
     margin-right: 0em;
     height: 20em;
   }
-  
+  */
   #hints p {
     right: 0;
     justify-content: right;
@@ -199,6 +199,7 @@
   }
 
   #liveView {
+    position:relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -413,5 +414,21 @@
     color: var(--secondary-text, gray);
   }
 
+  #hintCorner {
+    align-self: left;
+    background-color: var(--light-gray, gray);
+    position: absolute;
+    max-width: 23%;
+    max-height: 45%;
+    border-radius: 0px 10px 0px 7px;
+    left:0;
+    bottom:0;
+    transform: -2px 2px;
+  }
+  #hintImage {
+    margin-top: 0.35em;
+    width: 90%;
+    height: 90%;
+  }
 
   
