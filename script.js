@@ -20,8 +20,8 @@ let signIndex = 0;
 
 const screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 //console.log(screenWidth);
-const videoWidth = (Math.round(screenWidth/2.22)) +"px";
-const videoHeight = (Math.round(screenWidth/2.96)) + "px";
+let videoWidth = (Math.round(screenWidth/2.22)) +"px";
+let videoHeight = (Math.round(screenWidth/2.96)) + "px";
 console.log("W: " + videoWidth + " H: " + videoHeight);
 
 // Before we can use HandLandmarker class we must wait for it to finish
@@ -55,6 +55,8 @@ const video = document.getElementById("webcam");
 const canvasElement = document.getElementById("output_canvas");
 const canvasCtx = canvasElement.getContext("2d");
 const gestureOutput = document.getElementById("gesture_output");
+
+
 
 // Check if webcam access is supported.
 function hasGetUserMedia() {
@@ -93,6 +95,10 @@ function enableWebcam() {
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         video.srcObject = stream;
         video.addEventListener("loadeddata", function() {
+            let videoRatio = video.videoWidth/video.videoHeight;
+            console.log("Wv: " + video.videoWidth + " Hv: " + video.videoHeight);
+            videoWidth = (Math.round(screenWidth/2.22)) +"px";
+            videoHeight = (Math.round(screenWidth/(2.22*videoRatio))) + "px";
             predictWebcam();
             hideLoadingOverlay();
         });
