@@ -382,6 +382,20 @@
     animation: fadeIn 0.3s ease-in-out;
     opacity: 1;
     margin: 1.5em;
+    padding: 20px;
+    margin: 0 auto; 
+  }
+
+  @media (min-width: 768px) {
+    .teave {
+        max-width: 800px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .teave {
+        width: 100%; 
+    }
   }
   
   #textToType .current::after {
