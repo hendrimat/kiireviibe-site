@@ -181,8 +181,8 @@ async function predictWebcam() {
             letterStartTime = nowInMs;
         }
 
-        // Check if the current letter has been held for one second
-        if (letter === currentLetter && letterStartTime !== -1 && nowInMs - letterStartTime >= 300) {
+        // Check if the current letter has been held for  point one second
+        if (letter === currentLetter && letterStartTime !== -1 && nowInMs - letterStartTime >= 100) {
             // Reset the timer and go forward with the typing
             letterStartTime = -1;
             updateTyper(letter);
